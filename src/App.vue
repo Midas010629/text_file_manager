@@ -1,251 +1,87 @@
 <script>
-import { watch, onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, watch, nextTick } from "vue";
+import { useStore } from "vuex";
+import FileTree from "./components/FileTree.vue";
+import Info from "./components/Info.vue";
 
 export default {
+  components: { FileTree, Info },
   setup() {
-    /// 預設的file = {    name:"name" , type: txt / file      ,children:[ ]      ID / layer }
-    class file {
-      constructor(name, children) {
-        this.name = name;
+    const store = useStore();
+    const info = reactive({ childActive: null, isShow: false });
 
-        this.children = children;
-      }
-    }
-
-    //  const  obj = (name, type, children) => new file(name, type, children);
-    let test = new file("obj", []);
-
-    let obj1 = new file("obj1", []);
-    let obj2 = new file("obj2", []);
-    let obj3 = new file("obj3", []);
-    let obj4 = new file("obj4", []);
-    let obj5 = new file("obj5", []);
-    let obj6 = new file("obj6", []);
-    let obj7 = new file("obj7", []);
-    let file1 = new file("資料夾1", [obj2, obj3]);
-    let file5 = new file("資料夾5", [obj4]);
-    let file6 = new file("資料夾6", [obj7]);
-    let file3 = new file("資料夾3", [file5, obj5]);
-    let file4 = new file("資料夾4", [file6]);
-    let file2 = new file("資料夾2", [file3, obj6, file4]);
-
-    const state = reactive({
-      files: [obj1, file1, file2],
+    const data = computed(() => {
+      return store.getters.data;
     });
 
-    // state展開
-    const reState = reactive({ files: [] });
-    // 點擊
-    const active = ref();
-
-    // 階層樣式 test
-    const layer = ["a", "b", "c", "d", "e", "f ", "g"];
-
-    const addFileList = reactive({ id: "", layer: "" });
-    const inputText = ref("");
-
-    watch(reState, () => {
-      reState.files.forEach((item, index) => {
-        item.ID = index;
-        if (item.isShow == null) {
-          item.isShow = true;
+    const loadFile = (file) => {
+      file.forEach((item) => {
+        if (item.filePath == childActive.value.id) {
+          info.childActive = item;
+        } else if (item.fileExtension == "folder") {
+          loadFile(item.children);
         }
       });
-    });
-
-    // 新增檔案///
-    const addFile = () => {
-      let getID = active.value.getAttribute("id");
-
-      if (getID != undefined) {
-        let inputSplit = inputText.value.split(".");
-        let inputName = inputSplit[0];
-        if (Array.isArray(inputSplit) === true) {
-          let inputType = inputSplit[1];
-          // 如果是資料夾
-          if (inputType === undefined) {
-            inputName = `資料夾-${inputName}`;
-            let obj = {
-              name: inputName,
-              type: "file",
-              layer: addFileList.layer,
-            };
-            reState.files.splice(addFileList.id + 1, 0, obj);
-
-            inputText.value = "";
-          } else if (inputSplit.length > 2) {
-            alert("輸入格式錯誤");
-          }
-          // 執行檔 type: inputType
-          else {
-            if (getID != undefined) {
-              let obj = {
-                name: inputName,
-                type: "txt",
-                layer: addFileList.layer,
-              };
-              reState.files.splice(addFileList.id + 1, 0, obj);
-
-              inputText.value = "";
-            }
-          }
-        }
-      } else {
-        alert("選擇路徑");
-      }
     };
 
-    //新增點選樣式 /移除舊的
+    watch(
+      () => store.getters.childActive,
+      (newItem) => {
+        info.isShow = false;
+        const loadFile = (file) => {
+          file.forEach((item) => {
+            if (item.filePath == newItem.data.id) {
+              info.childActive = item;
+            } else if (item.fileExtension == "folder") {
+              loadFile(item.children);
+            }
+          });
+        };
+        loadFile(data.value);
+        nextTick(() => {
+          info.isShow = true;
+        });
+      },
+      { deep: true }
+    );
+
     addEventListener("click", (e) => {
-      let input = document.querySelector("input");
-      //目前點選的
-      let target = e.target;
-      //上一個被點選的
-      let actived = document.querySelector(".active");
-      ///
-      //如果沒點input移除舊的 / 舊的不能為空
-      if (target != input) {
-        if (actived !== null) {
-          actived.classList.toggle("active");
-        }
-        target.classList.toggle("active");
-
-        //檢查是否點擊的是 li
-        let getID = target.getAttribute("id");
-
-        if (target.tagName === "LI") {
-          reState.files.forEach((item) => {
-            // 抓 id
-            if (item.ID == getID) {
-              // 丟file 到當層layer ,如果是資料夾 => 下層layer
-              addFileList.id = item.ID;
-              addFileList.layer = item.layer;
-              if (item.type === "file") {
-                let idx = layer.indexOf(addFileList.layer);
-                addFileList.layer = layer[idx + 1];
-              }
-            }
-          });
-        }
-        // 檢查是否點擊的是  checkbox
-        else if (target.parentElement.tagName === "LI") {
-          let getID = target.parentElement.getAttribute("id");
-          reState.files.forEach((item, index) => {
-            // 抓 id
-            if (item.ID == getID) {
-              // startIndex 為子目錄 起始的index
-              let startIndex = index + 1;
-              // endIndex 為子目錄 結束的index
-              let endIndex = null;
-
-              // subLayer 為判斷子層的依據
-              let subLayer = item.layer;
-              let subArray = reState.files.slice(startIndex);
-
-              // 判斷子目錄有無資料
-              if (layer.indexOf(subLayer) < layer.indexOf(subArray[0].layer)) {
-                let getIndex = subArray.findIndex(
-                  (item) => item.layer === subLayer
-                );
-                if (getIndex === -1) {
-                  endIndex = reState.files.length - 1;
-                } else {
-                  endIndex = startIndex + getIndex - 1;
-                }
-                // 判斷是要開啟 或 關閉
-                if (target.checked == false) {
-                  //開
-                  console.log("open");
-                  let changeArr = reState.files.slice(startIndex, endIndex + 1);
-                  // console.log(changeArr);
-                  changeArr.forEach((item) => {
-                    // 開啟同層的資料
-                    if (item.layer == subArray[0].layer) {
-                      item.isShow = true;
-                    }
-                  });
-                } else {
-                  console.log("close");
-                  let changeArr = reState.files.slice(startIndex, endIndex + 1);
-                  // console.log(changeArr);
-                  changeArr.forEach((item) => {
-                    item.isShow = false;
-                  });
-                }
-              } else {
-                console.log("無資料");
-              }
-            }
-          });
-        }
-
-        active.value = target;
-
-        // console.log(target);
-        // console.log("------------");
-        // console.log(reState.files);
-      }
-    });
-
-    // --------------------(階層展開-----------------
-    let layerBase = 0;
-
-    const loadFile = (item, idx) => {
-      item.forEach((item) => {
-        checkChildren(item, idx);
+      info.isShow = false;
+      let arr = document.querySelectorAll(".active");
+      arr.forEach((item) => {
+        item.classList.add("actived");
+        item.classList.remove("active");
       });
-    };
-
-    const checkChildren = (item, idx) => {
-      item.layer = layer[idx];
-      reState.files.push(item);
-      // children 有資料
-      if (item.children.length != 0) {
-        item.type = "file";
-        idx++;
-        loadFile(item.children, idx);
-      } else {
-        item.type = "txt";
-      }
-    };
-    // --------------------------------------------------階層展開)
-    onMounted(() => {
-      loadFile(state.files, layerBase);
     });
 
-    return {
-      inputText,
-      reState,
-      state,
-      addFile,
-    };
+    onMounted(() => {});
+    return { info };
   },
 };
 </script>
 <template>
+  <div class="nav">
+    <!-- nav-bar遞迴結構 -->
+    <FileTree />
+  </div>
+
   <div class="main">
     <div class="header">
       <h1>檔案總管</h1>
     </div>
-    <div class="content">
-      <input type="text" @keyup.enter="addFile" v-model="inputText" />
-      <ul>
-        <li
-          v-for="(item, index) in reState.files"
-          :key="item.ID"
-          :class="item.layer"
-          :id="item.ID"
-          v-show="item.isShow"
-        >
-          <input type="checkbox" v-show="item.type == 'file'" value="false" />
-          {{ item.ID }}***{{ item.name }} :::{{ item.layer }}
-        </li>
-      </ul>
-    </div>
-    <div class="footer">search</div>
-  </div>
 
-  <div class="aside">nav</div>
+    <div class="content">
+      <div class="abc">
+        <div class="router">
+          <router-view></router-view>
+        </div>
+        <div class="footer">search</div>
+      </div>
+      <div class="info" v-if="info.isShow">
+        <Info :item="info.childActive" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <style lang="scss">
@@ -261,78 +97,108 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: slategray;
 }
-input {
-  border: 2px solid black;
+a {
+  text-decoration: none;
+  color: black;
 }
-ul {
-  display: flex;
-  flex-direction: column;
-  li {
-    &.active {
-      color: red;
-      background-color: white;
-    }
-  }
-
-  .a {
-  }
-  .b {
-    padding-left: 100px;
-  }
-  .c {
-    padding-left: 200px;
-  }
-  .d {
-    padding-left: 300px;
-  }
+.active {
+  background-color: rgb(187, 203, 223);
+}
+.actived {
+  border: 2px solid rgb(185, 189, 194);
 }
 
 #app {
   display: flex;
-  flex-direction: row-reverse;
   width: 100%;
   height: 100%;
+  flex-wrap: wrap;
+  background-color: #d9d9d9;
+}
+.nav {
+  width: 250px;
+  padding: 1rem;
 }
 .main {
-  width: 80%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-
+  flex-grow: 1;
   .header {
-    width: 100%;
-    border: 2px solid red;
-    text-align: center;
+    display: flex;
+    height: 60px;
+
+    justify-content: center;
+    align-items: center;
   }
   .content {
-    width: 100%;
-    flex: auto;
-    border: 2px solid red;
-  }
-  .footer {
-    width: 100%;
-    height: 20%;
-    border: 2px solid blue;
-    text-align: center;
-  }
-}
-.aside {
-  border: 2px solid red;
-  width: 20%;
-}
-</style>
-<!-- 
-nav {
-  padding: 30px;
+    flex-grow: 1;
+    display: flex;
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
+    .abc {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      border-radius: 10px;
+      background-color: #e5e5e5;
+      margin: 1rem;
+      .router {
+        flex-grow: 1;
+      }
+      .footer {
+        height: 250px;
+        text-align: center;
+        border-radius: 10px;
+        background-color: #e5e5e5;
+        border: 2px solid red;
+      }
+    }
+    .info {
+      width: 350px;
+      height: 100%;
     }
   }
-} -->
+}
+</style>
+
+<!-- // 新增檔案///
+const addFile = () => {
+  let getID = active.value.getAttribute("id");
+
+  if (getID != undefined) {
+    let inputSplit = inputText.value.split(".");
+    let inputName = inputSplit[0];
+    if (Array.isArray(inputSplit) === true) {
+      let inputType = inputSplit[1];
+      // 如果是資料夾
+      if (inputType === undefined) {
+        inputName = `資料夾-${inputName}`;
+        let obj = {
+          name: inputName,
+          type: "file",
+          layer: addFileList.layer,
+        };
+        reState.files.splice(addFileList.id + 1, 0, obj);
+
+        inputText.value = "";
+      } else if (inputSplit.length > 2) {
+        alert("輸入格式錯誤");
+      }
+      // 執行檔 type: inputType
+      else {
+        if (getID != undefined) {
+          let obj = {
+            name: inputName,
+            type: "txt",
+            layer: addFileList.layer,
+          };
+          reState.files.splice(addFileList.id + 1, 0, obj);
+
+          inputText.value = "";
+        }
+      }
+    }
+  } else {
+    alert("選擇路徑");
+  }
+}; -->
