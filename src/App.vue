@@ -1,11 +1,11 @@
 <script>
 import { computed, onMounted, reactive, watch, nextTick } from "vue";
 import { useStore } from "vuex";
-import FileTree from "./components/FileTree.vue";
+import NavBar from "./components/NavBar.vue";
 import Info from "./components/Info.vue";
 
 export default {
-  components: { FileTree, Info },
+  components: { NavBar, Info },
   setup() {
     const store = useStore();
     const info = reactive({ childActive: null, isShow: false });
@@ -62,7 +62,7 @@ export default {
 <template>
   <div class="nav">
     <!-- nav-bar遞迴結構 -->
-    <FileTree />
+    <NavBar />
   </div>
 
   <div class="main">

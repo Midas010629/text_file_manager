@@ -1,13 +1,14 @@
 <script>
 // nav-bar遞迴結構
 import { computed, onBeforeUpdate, onMounted, reactive, ref } from "vue";
-import FileTree from "./FileTree.vue";
+import NavBar from "./NavBar.vue";
 import { useGoSubfile } from "../composition-api";
+import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
 export default {
-  name: "FileTree",
-  components: { FileTree },
+  name: "NavBar",
+  components: { NavBar },
   props: {
     item: {
       type: Array,
@@ -17,6 +18,7 @@ export default {
   setup(props, { emit }) {
     // const active = ref();
     const store = useStore();
+    const router = useRouter();
     const { Subfile } = useGoSubfile();
     // files接收資料結構
     const files = reactive({ data: [] });
@@ -41,6 +43,8 @@ export default {
       if (props.item.length === 0) {
         store.dispatch("handInit").then((res) => {
           files.data = res;
+          store.dispatch("handChildren", res);
+          router.push({ path: "/" });
         });
       } else {
         files.data = props.item;
@@ -80,13 +84,9 @@ export default {
         >
       </div>
       <div class="subMenu">
-        <FileTree
-          v-if="item.children"
-          :item="item.children"
-          v-show="item.isOpen"
-        >
+        <NavBar v-if="item.children" :item="item.children" v-show="item.isOpen">
           {{ item.fileName }}
-        </FileTree>
+        </NavBar>
       </div>
     </div>
   </div>

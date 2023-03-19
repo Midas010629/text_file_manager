@@ -1,5 +1,5 @@
 <script>
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import { onBeforeRouteUpdate } from "vue-router";
 import { useStore } from "vuex";
 import { useGoSubfile } from "../composition-api";
@@ -23,13 +23,12 @@ export default {
       return store.getters.childActive.data;
     });
 
-    onMounted(() => {
-      flies.data = childrenData.value;
-    });
-    onBeforeRouteUpdate((to, from, next) => {
-      flies.data = childrenData.value;
-      next();
-    });
+    watch(
+      () => childrenData.value,
+      (item) => {
+        flies.data = item;
+      }
+    );
 
     const toggleChildActive = (e) => {
       if (childActive.value != null) {
