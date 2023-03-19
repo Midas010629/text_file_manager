@@ -5,7 +5,7 @@ import { useStore } from "vuex";
 import { useGoSubfile } from "../composition-api";
 import Img from "../components/Img.vue";
 export default {
-  name: "Files",
+  name: "Home",
   components: {
     Img,
   },
