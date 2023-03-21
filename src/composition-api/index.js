@@ -1,5 +1,5 @@
 import { goSubfile } from "./goSubfile.js";
-// import { mouseEvent } from "./mouseEvent.js";
+import { toggleInfo } from "./toggleInfo";
 
 export const useGoSubfile = goSubfile;
-// export const useMouseClick = mouseEvent;
+export const useToggleInfo = toggleInfo;

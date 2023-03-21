@@ -7,7 +7,7 @@ export default {
     },
     size: {
       type: Number,
-      default: 12,
+      default: 0,
     },
   },
   setup(props) {
@@ -19,27 +19,23 @@ export default {
   <i
     :style="{ fontSize: props.size + 'px' }"
     class="fa-sharp fa-regular fa-folder"
-    v-if="props.item === 'folder'"
+    v-show="props.item === 'folder'"
   ></i>
   <i
     :style="{ fontSize: props.size + 'px' }"
     class="fa-sharp fa-regular fa-file-powerpoint"
-    v-if="props.item === 'pptx'"
+    v-show="props.item === 'pptx'"
   ></i>
   <i
     :style="{ fontSize: props.size + 'px' }"
     class="fa-regular fa-file-image"
-    v-if="props.item === 'jpg'"
+    v-show="props.item === 'jpg'"
   ></i>
   <i
     :style="{ fontSize: props.size + 'px' }"
     class="fa-regular fa-file"
-    v-if="props.item === 'docx'"
+    v-show="props.item === 'docx'"
   ></i>
 </template>
 
-<style scoped>
-i {
-  padding: 1rem;
-}
-</style>
+<style lang="scss" scoped></style>

@@ -1,6 +1,6 @@
 <script>
 // nav-bar遞迴結構
-import { computed, onBeforeUpdate, onMounted, reactive, ref } from "vue";
+import { computed, onBeforeUpate, reactive, ref, watch, nextTick } from "vue";
 import NavBar from "./NavBar.vue";
 import { useGoSubfile } from "../composition-api";
 import { useRouter } from "vue-router";
@@ -16,42 +16,47 @@ export default {
     },
   },
   setup(props, { emit }) {
-    // const active = ref();
     const store = useStore();
     const router = useRouter();
     const { Subfile } = useGoSubfile();
-    // files接收資料結構
+
+    // 接收資料
     const files = reactive({ data: [] });
+    // 目前點擊索引
+    const idx = ref(null);
+
+    // 上個被點擊的
     const navActive = computed(() => {
       return store.getters.navActive;
     });
 
-    const toggleNavActive = (e) => {
-      if (store.getters.navActive != null) {
-        navActive.value.classList.remove("active");
-        if (navActive.value.classList.contains("actived")) {
-          navActive.value.classList.remove("actived");
-        }
+    // 變更點擊樣式
+    const toggleActive = (e, index) => {
+      idx.value = null;
+      nextTick(() => {
+        idx.value = index;
+      });
+      if (navActive.value != null) {
+        navActive.value.classList.remove("active", "actived");
       }
-
-      e.target.parentElement.classList.add("active");
       store.dispatch("handNavActive", e.target.parentElement);
     };
 
-    onMounted(() => {
-      // files變數執行初始化 ,接下來接收props值
-      if (props.item.length === 0) {
-        store.dispatch("handInit").then((res) => {
-          files.data = res;
-          store.dispatch("handChildren", res);
-          router.push({ path: "/" });
-        });
-      } else {
-        files.data = props.item;
-      }
-    });
+    // 判斷資料串,並接收資料
+    if (props.item.length === 0) {
+      watch(
+        () => store.getters.fetchData,
+        (item) => {
+          files.data = item;
+        }
+      );
+      // F5重整回首頁;
+      router.push({ path: "/" });
+    } else {
+      files.data = props.item;
+    }
 
-    return { files, Subfile, toggleNavActive };
+    return { files, Subfile, toggleActive, idx };
   },
 };
 </script>
@@ -62,7 +67,7 @@ export default {
       v-for="(item, index) in files.data"
       :key="item.filePath"
     >
-      <div class="menu">
+      <div class="menu" :class="{ active: idx === index }">
         <div class="toggle-icon" @click="item.isOpen = !item.isOpen">
           {{
             item.isOpen === true && item.fileExtension === "folder"
@@ -78,7 +83,7 @@ export default {
           href="javascript:;"
           @click.prevent.stop="
             Subfile(item);
-            toggleNavActive($event);
+            toggleActive($event, index);
           "
           >{{ item.fileName }}</a
         >
@@ -98,7 +103,7 @@ export default {
   border-radius: 10px;
   background-color: #e5e5e5;
   .nav-bar-item {
-    padding: 0.25rem 0 0 0.25rem;
+    padding: 0.25rem 0.25rem 0 0.25rem;
     .menu {
       display: flex;
 
@@ -108,6 +113,8 @@ export default {
         cursor: pointer;
         text-decoration: none;
         text-align: center;
+      }
+      a {
       }
     }
     .menu:hover:not(.active) {

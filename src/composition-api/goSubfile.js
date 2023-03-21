@@ -8,6 +8,7 @@ export const goSubfile = (file) => {
     if (file.fileExtension === "folder") {
       store.dispatch("handChildren", file.children);
       router.push({ path: `${file.filePath}` });
+      store.dispatch("handSearchData", { isShow: false });
     }
   };
 

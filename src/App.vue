@@ -2,84 +2,28 @@
 import { computed, onMounted, reactive, watch, nextTick } from "vue";
 import { useStore } from "vuex";
 import NavBar from "./components/NavBar.vue";
-import Info from "./components/Info.vue";
-
+import Header from "./components/Header.vue";
 export default {
-  components: { NavBar, Info },
+  components: { NavBar, Header },
   setup() {
     const store = useStore();
-    const info = reactive({ childActive: null, isShow: false });
-
-    const data = computed(() => {
-      return store.getters.data;
+    onMounted(() => {
+      store.dispatch("handInit");
     });
-
-    const loadFile = (file) => {
-      file.forEach((item) => {
-        if (item.filePath == childActive.value.id) {
-          info.childActive = item;
-        } else if (item.fileExtension == "folder") {
-          loadFile(item.children);
-        }
-      });
-    };
-
-    watch(
-      () => store.getters.childActive,
-      (newItem) => {
-        info.isShow = false;
-        const loadFile = (file) => {
-          file.forEach((item) => {
-            if (item.filePath == newItem.data.id) {
-              info.childActive = item;
-            } else if (item.fileExtension == "folder") {
-              loadFile(item.children);
-            }
-          });
-        };
-        loadFile(data.value);
-        nextTick(() => {
-          info.isShow = true;
-        });
-      },
-      { deep: true }
-    );
-
-    addEventListener("click", (e) => {
-      info.isShow = false;
-      let arr = document.querySelectorAll(".active");
-      arr.forEach((item) => {
-        item.classList.add("actived");
-        item.classList.remove("active");
-      });
-    });
-
-    onMounted(() => {});
-    return { info };
+    return {};
   },
 };
 </script>
 <template>
   <div class="nav">
-    <!-- nav-bar遞迴結構 -->
     <NavBar />
   </div>
-
-  <div class="main">
+  <div class="content">
     <div class="header">
-      <h1>檔案總管</h1>
+      <Header />
     </div>
-
-    <div class="content">
-      <div class="abc">
-        <div class="router">
-          <router-view></router-view>
-        </div>
-        <div class="footer">search</div>
-      </div>
-      <div class="info" v-if="info.isShow">
-        <Info :item="info.childActive" />
-      </div>
+    <div class="main">
+      <router-view></router-view>
     </div>
   </div>
 </template>
@@ -117,46 +61,26 @@ a {
   background-color: #d9d9d9;
 }
 .nav {
-  width: 250px;
+  width: 270px;
   padding: 1rem;
 }
-.main {
+.content {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   .header {
     display: flex;
+    position: relative;
     height: 60px;
-
     justify-content: center;
     align-items: center;
+    border-radius: 10px;
+    background-color: #e5e5e5;
+    margin: 20px 20px 0 20px;
   }
-  .content {
-    flex-grow: 1;
+  .main {
     display: flex;
-
-    .abc {
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-      border-radius: 10px;
-      background-color: #e5e5e5;
-      margin: 1rem;
-      .router {
-        flex-grow: 1;
-      }
-      .footer {
-        height: 250px;
-        text-align: center;
-        border-radius: 10px;
-        background-color: #e5e5e5;
-        border: 2px solid red;
-      }
-    }
-    .info {
-      width: 350px;
-      height: 100%;
-    }
+    flex-grow: 1;
   }
 }
 </style>

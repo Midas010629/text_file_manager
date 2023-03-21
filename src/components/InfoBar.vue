@@ -1,38 +1,43 @@
 <script>
-import { onMounted, reactive } from "vue";
+import { computed, onMounted, reactive, watch } from "vue";
 import Img from "./Img.vue";
+import { useStore } from "vuex";
 
 export default {
-  name: "Info",
+  name: "InfoBar",
   components: {
     Img,
   },
-  props: {
-    item: {
-      type: Object,
-      default: () => ({}),
-    },
-  },
-  setup(props) {
+
+  setup() {
+    const store = useStore();
     const file = reactive({ data: {} });
 
-    onMounted(() => {
-      file.data = props.item;
+    const infoData = computed(() => {
+      return store.getters.infoData.data;
     });
-    return { file };
+    const closeBar = () => {
+      store.dispatch("handInfoData", { isShow: false });
+    };
+    onMounted(() => {
+      file.data = infoData.value;
+    });
+    return { file, closeBar };
   },
 };
 </script>
 <template>
   <div class="card">
     <div class="card-item">
+      <a href="javascript:;" @click.prevent.stop="closeBar">
+        <i class="fa-regular fa-circle-xmark"></i>
+      </a>
       <div class="img">
-        <Img :item="file.data.fileExtension" :size="100" />
+        <Img :item="file.data.fileExtension" :size="150" />
         <h2 v-show="file.data.fileExtension != 'folder'">檔案詳細內容</h2>
         <h2 v-show="file.data.fileExtension === 'folder'">資料夾詳細內容</h2>
       </div>
-
-      <div class="aaa">
+      <div class="content">
         <p>名稱: {{ file.data.fileName }}</p>
         <p>路徑: {{ file.data.filePath }}</p>
         <p>大小: {{ file.data.fileSize }}</p>
@@ -52,15 +57,25 @@ export default {
     width: 90%;
     border-radius: 10px;
     background-color: #e5e5e5;
+    a {
+      display: block;
+      margin: 1rem 0 0 1rem;
+      i {
+        font-size: 25px;
+      }
+    }
+
     .img {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 1rem;
       border-bottom: 1px solid gray;
+      h2 {
+        padding: 1rem 0;
+      }
     }
 
-    .aaa {
+    .content {
       display: flex;
       flex-direction: column;
       p {
@@ -68,7 +83,5 @@ export default {
       }
     }
   }
-  /* width: 90%;
-  height: 100%; */
 }
 </style>
