@@ -47,16 +47,18 @@ export default {
 
 <style lang="scss" scoped>
 .card {
+  flex-basis: 280px;
+  flex-shrink: 0;
   display: flex;
-  justify-content: end;
   height: 100%;
-  padding: 1rem;
+  margin-left: 1.5rem;
+
   .card-item {
-    width: 90%;
+    width: 100%;
     border-radius: 10px;
     background-color: #e5e5e5;
     a {
-      display: block;
+      display: inline-block;
       margin: 1rem 0 0 1rem;
       i {
         font-size: 25px;
@@ -78,7 +80,7 @@ export default {
       display: flex;
       flex-direction: column;
       p {
-        padding: 0.5rem 0 0 1rem;
+        padding: 0.5rem 0.5rem 0 0.5rem;
       }
     }
   }

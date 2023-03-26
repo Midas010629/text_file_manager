@@ -10,57 +10,54 @@ export default {
         data: searchText.value,
         isShow: true,
       });
-    };
-
-    const clearText = () => {
       searchText.value = "";
     };
 
-    return { keyEnter, searchText, clearText };
+    return { keyEnter, searchText };
   },
 };
 </script>
 <template>
-  <h1>檔案總管</h1>
   <div class="searchBar">
-    <label for="search"> <i class="fa-solid fa-magnifying-glass"></i></label>
     <input
-      id="search"
       type="text"
       placeholder="請輸入搜尋內容"
       v-model="searchText"
       @keyup.enter="keyEnter()"
     />
-    <a href="javascript:;" @click.prevent.stop="clearText">
-      <i class="fa-regular fa-circle-xmark"></i>
-    </a>
+
+    <a href="javascript:;" @click.prevent.stop="keyEnter()"
+      ><i class="fa-solid fa-magnifying-glass"></i
+    ></a>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .searchBar {
-  position: absolute;
-  left: 1rem;
   display: flex;
-  align-items: center;
-  label {
-    i {
-      font-size: 30px;
-    }
-  }
 
   input {
-    margin-left: 1rem;
-    padding-left: 0.5rem;
-    width: 200px;
-    height: 30px;
+    width: 400px;
+    height: 40px;
     font-size: 20px;
+    padding-left: 10px;
     border: 1px solid black;
-    border-radius: 3px;
+    border-right: none;
+    border-radius: 20px 0 0 20px;
   }
-  i {
-    margin-left: 0.5rem;
-    font-size: 20px;
+  a {
+    background-color: white;
+    height: 40px;
+    width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid black;
+    border-radius: 0 20px 20px 0;
+
+    i {
+      font-size: 20px;
+    }
   }
 }
 </style>

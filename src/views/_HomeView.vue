@@ -74,9 +74,7 @@ export default {
     </div>
     <Search v-show="searchIsShow" />
   </div>
-  <div class="info" v-if="infoIsShow">
-    <InfoBar />
-  </div>
+  <InfoBar v-if="infoIsShow" />
 </template>
 <style lang="scss" scoped>
 .container {
@@ -85,7 +83,6 @@ export default {
   flex-direction: column;
   border-radius: 10px;
   background-color: #e5e5e5;
-  margin: 1rem;
 
   .path {
     flex-grow: 1;
@@ -100,6 +97,7 @@ export default {
     }
     .cards {
       display: flex;
+      flex-wrap: wrap;
       margin: 1rem;
 
       :hover:not(.active) {
@@ -107,9 +105,5 @@ export default {
       }
     }
   }
-}
-.info {
-  width: 350px;
-  height: 100%;
 }
 </style>

@@ -82,6 +82,7 @@ export default {
   }
   .cards {
     display: flex;
+    flex-wrap: wrap;
     margin: 1rem;
 
     :hover:not(.active) {

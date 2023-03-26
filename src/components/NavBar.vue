@@ -1,68 +1,3 @@
-<template>
-  <div class="nav-bar">
-    <div
-      class="nav-bar-item"
-      v-for="(item, index) in files.data"
-      :key="item.filePath"
-    >
-      <div class="menu" :class="{ active: idx === index }">
-        <div class="toggle-icon" @click="item.isOpen = !item.isOpen">
-          {{
-            item.isOpen === true && item.fileExtension === "folder"
-              ? "▼"
-              : item.isOpen === false && item.fileExtension === "folder"
-              ? "▶"
-              : item.fileExtension != "folder"
-              ? ""
-              : "▶"
-          }}
-        </div>
-        <a
-          href="javascript:;"
-          @click.prevent.stop="
-            Subfile(item);
-            toggleActive($event, index);
-          "
-          >{{ item.fileName }}</a
-        >
-      </div>
-      <div class="subMenu">
-        <NavBar v-if="item.children" :item="item.children" v-show="item.isOpen">
-          {{ item.fileName }}
-        </NavBar>
-      </div>
-    </div>
-  </div>
-</template>
-
-<style lang="scss" scoped>
-.nav-bar {
-  height: 100%;
-  border-radius: 10px;
-  background-color: #e5e5e5;
-  .nav-bar-item {
-    padding: 0.25rem 0.25rem 0 0.25rem;
-    .menu {
-      display: flex;
-
-      .toggle-icon {
-        width: 20px;
-        color: red;
-        cursor: pointer;
-        text-decoration: none;
-        text-align: center;
-      }
-    }
-    .menu:hover:not(.active) {
-      background-color: rgb(215, 221, 228);
-    }
-
-    .subMenu {
-      margin-left: 20px;
-    }
-  }
-}
-</style>
 <script>
 // nav-bar遞迴結構
 import { computed, onBeforeUpate, reactive, ref, watch, nextTick } from "vue";
@@ -82,7 +17,6 @@ export default {
   },
   setup(props, { emit }) {
     const store = useStore();
-    const router = useRouter();
     const { Subfile } = useGoSubfile();
 
     // 接收資料
@@ -103,9 +37,13 @@ export default {
       });
       // 上個被點擊的
       if (navActive.value != null) {
+        console.log("1");
         navActive.value.classList.remove("active", "actived");
       }
-      store.dispatch("handNavActive", e.target.parentElement);
+      store.dispatch("handNavActive", e.target);
+    };
+    const isOpen = (item) => {
+      item.isOpen = !item.isOpen;
     };
 
     // 判斷資料串,並接收資料
@@ -116,13 +54,82 @@ export default {
           files.data = item;
         }
       );
-      // F5重整回首頁;
-      // router.push({ path: "/" });
     } else {
       files.data = props.item;
     }
 
-    return { files, Subfile, toggleActive, idx };
+    return { files, Subfile, toggleActive, idx, isOpen };
   },
 };
 </script>
+<template>
+  <div>
+    <div
+      class="nav-bar"
+      v-for="(item, index) in files.data"
+      :key="item.filePath"
+    >
+      <div class="menu">
+        <div class="toggle-icon" @click="isOpen(item)">
+          {{
+            item.isOpen === true && item.fileExtension === "folder"
+              ? "▼"
+              : item.isOpen === false && item.fileExtension === "folder"
+              ? "▶"
+              : item.fileExtension != "folder"
+              ? ""
+              : "▶"
+          }}
+        </div>
+        <a
+          :class="{ active: idx === index }"
+          href="javascript:;"
+          @click.prevent.stop="
+            Subfile(item);
+            toggleActive($event, index);
+          "
+          >{{ item.fileName }}</a
+        >
+      </div>
+
+      <NavBar
+        :item="item.children"
+        class="subMenu"
+        :class="{ open: item.isOpen }"
+      >
+        {{ item.fileName }}
+      </NavBar>
+    </div>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+.nav-bar {
+  .menu {
+    display: flex;
+    .toggle-icon {
+      width: 20px;
+      color: red;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+    }
+    a {
+      padding: 0 0.25rem;
+    }
+    a:hover:not(.active) {
+      background-color: rgb(215, 221, 228);
+    }
+  }
+
+  .subMenu {
+    margin-left: 10px;
+    transition: max-height 0.2s ease-in-out;
+    max-height: 0;
+    overflow: hidden;
+  }
+  .subMenu.open {
+    max-height: 200px;
+  }
+}
+</style>

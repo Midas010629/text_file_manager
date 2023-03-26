@@ -13,6 +13,7 @@ export default {
 </script>
 <template>
   <div class="nav">
+    <h1>檔案總管</h1>
     <NavBar />
   </div>
   <div class="content">
@@ -47,37 +48,34 @@ a {
   background-color: rgb(187, 203, 223);
 }
 .actived {
-  border: 2px solid rgb(185, 189, 194);
+  border: 1px solid rgb(185, 189, 194);
 }
 
 #app {
   display: flex;
   width: 100%;
   height: 100%;
-  flex-wrap: wrap;
   background-color: #d9d9d9;
 }
 .nav {
-  width: 270px;
+  flex-basis: 270px;
+  flex-shrink: 0;
   padding: 1rem;
+  h1 {
+    margin-bottom: 1rem;
+  }
 }
 .content {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   .header {
-    display: flex;
-    position: relative;
-    height: 60px;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-    background-color: #e5e5e5;
-    margin: 20px 20px 0 20px;
+    margin: 1rem 0 0.5rem 0;
   }
   .main {
     display: flex;
     flex-grow: 1;
+    margin: 0 1rem 1rem 0;
   }
 }
 </style>
