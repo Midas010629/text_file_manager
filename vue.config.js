@@ -1,4 +1,5 @@
 const { defineConfig } = require("@vue/cli-service");
+
 module.exports = defineConfig({
-  publicPath: process.env.NODE_ENV === "production" ? "/text_file_manger" : "/",
+  publicPath: process.env.BASE_URL,
 });

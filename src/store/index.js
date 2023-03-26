@@ -10,11 +10,10 @@ export default createStore({
   },
   actions: {
     handInit({ commit }) {
-      return fetch("./fileData.json")
+      return fetch(process.env.BASE_URL + "fileData.json")
         .then((response) => response.json())
         .then((res) => {
           commit("init", res.files);
-          commit("children", res.files);
           return res.files;
         });
     },

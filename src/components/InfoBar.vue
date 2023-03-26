@@ -11,7 +11,6 @@ export default {
 
   setup() {
     const store = useStore();
-    const file = reactive({ data: {} });
 
     const infoData = computed(() => {
       return store.getters.infoData.data;
@@ -19,10 +18,9 @@ export default {
     const closeBar = () => {
       store.dispatch("handInfoData", { isShow: false });
     };
-    onMounted(() => {
-      file.data = infoData.value;
-    });
-    return { file, closeBar };
+
+    onMounted(() => {});
+    return { infoData, closeBar };
   },
 };
 </script>
@@ -33,15 +31,15 @@ export default {
         <i class="fa-regular fa-circle-xmark"></i>
       </a>
       <div class="img">
-        <Img :item="file.data.fileExtension" :size="150" />
-        <h2 v-show="file.data.fileExtension != 'folder'">檔案詳細內容</h2>
-        <h2 v-show="file.data.fileExtension === 'folder'">資料夾詳細內容</h2>
+        <Img :item="infoData.fileExtension" :size="150" />
+        <h2 v-show="infoData.fileExtension != 'folder'">檔案詳細內容</h2>
+        <h2 v-show="infoData.fileExtension === 'folder'">資料夾詳細內容</h2>
       </div>
       <div class="content">
-        <p>名稱: {{ file.data.fileName }}</p>
-        <p>路徑: {{ file.data.filePath }}</p>
-        <p>大小: {{ file.data.fileSize }}</p>
-        <p>產生日期: {{ file.data.createdDate }}</p>
+        <p>名稱: {{ infoData.fileName }}</p>
+        <p>路徑: {{ infoData.filePath }}</p>
+        <p>大小: {{ infoData.fileSize }}</p>
+        <p>產生日期: {{ infoData.createdDate }}</p>
       </div>
     </div>
   </div>
@@ -70,6 +68,7 @@ export default {
       flex-direction: column;
       align-items: center;
       border-bottom: 1px solid gray;
+
       h2 {
         padding: 1rem 0;
       }

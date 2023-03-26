@@ -1,9 +1,12 @@
 <script>
+import { reactive, onMounted, nextTick } from "vue";
+
 export default {
   name: "Img",
   props: {
     item: {
       type: String,
+      default: "",
     },
     size: {
       type: Number,
@@ -11,31 +14,28 @@ export default {
     },
   },
   setup(props) {
-    return { props };
+    const img = reactive({ type: "", size: "" });
+    onMounted(() => {
+      img.size = props.size;
+      if (props.item === "folder") {
+        img.type = "fa-sharp fa-regular fa-folder";
+      }
+      if (props.item === "pptx") {
+        img.type = "fa-sharp fa-regular fa-file-powerpoint";
+      }
+      if (props.item === "jpg") {
+        img.type = "fa-regular fa-file-image";
+      }
+      if (props.item === "docx") {
+        img.type = "fa-regular fa-file";
+      }
+    });
+    return { img };
   },
 };
 </script>
 <template>
-  <i
-    :style="{ fontSize: props.size + 'px' }"
-    class="fa-sharp fa-regular fa-folder"
-    v-show="props.item === 'folder'"
-  ></i>
-  <i
-    :style="{ fontSize: props.size + 'px' }"
-    class="fa-sharp fa-regular fa-file-powerpoint"
-    v-show="props.item === 'pptx'"
-  ></i>
-  <i
-    :style="{ fontSize: props.size + 'px' }"
-    class="fa-regular fa-file-image"
-    v-show="props.item === 'jpg'"
-  ></i>
-  <i
-    :style="{ fontSize: props.size + 'px' }"
-    class="fa-regular fa-file"
-    v-show="props.item === 'docx'"
-  ></i>
+  <i :style="{ fontSize: img.size + 'px' }" :class="img.type"></i>
 </template>
 
 <style lang="scss" scoped></style>

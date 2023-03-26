@@ -1,15 +1,12 @@
 <script>
 import { computed, onMounted, reactive, watch, nextTick } from "vue";
 import { useStore } from "vuex";
+import { useRoute } from "vue-router";
 import NavBar from "./components/NavBar.vue";
 import Header from "./components/Header.vue";
 export default {
   components: { NavBar, Header },
   setup() {
-    const store = useStore();
-    onMounted(() => {
-      store.dispatch("handInit");
-    });
     return {};
   },
 };

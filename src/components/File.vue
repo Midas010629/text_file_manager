@@ -1,5 +1,5 @@
 <script>
-import { computed, reactive, watch } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import { useStore } from "vuex";
 import Img from "../components/Img.vue";
 import { useGoSubfile, useToggleInfo } from "../composition-api";
@@ -14,6 +14,7 @@ export default {
   setup(props) {
     const { Subfile } = useGoSubfile();
     const { toggleInfo, idx } = useToggleInfo();
+
     return { props, Subfile, toggleInfo, idx };
   },
 };
@@ -44,6 +45,7 @@ export default {
   align-items: center;
   width: 250px;
   margin: 0.25rem;
+  padding: 0.5rem;
 
   .img {
     pointer-events: none;

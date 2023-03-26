@@ -1,10 +1,9 @@
 <script>
 import { computed, reactive, watch } from "vue";
 import { useStore } from "vuex";
-import Img from "../components/Img.vue";
 import File from "../components/File.vue";
 export default {
-  components: { Img, File },
+  components: { File },
   setup() {
     const store = useStore();
     let flatData = [];

@@ -1,5 +1,13 @@
 import { useStore } from "vuex";
-import { reactive, ref, nextTick } from "vue";
+import {
+  reactive,
+  ref,
+  nextTick,
+  onMounted,
+  onBeforeUpdate,
+  onUpdated,
+} from "vue";
+import { onBeforeRouteUpdate } from "vue-router";
 
 export const toggleInfo = (item, index) => {
   const store = useStore();
@@ -24,5 +32,11 @@ export const toggleInfo = (item, index) => {
       item.classList.remove("active");
     });
   });
+
+  onBeforeRouteUpdate((to, from, next) => {
+    idx.value = null;
+    next();
+  });
+
   return { toggleInfo, idx };
 };

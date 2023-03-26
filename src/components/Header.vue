@@ -12,14 +12,11 @@ export default {
       });
     };
 
-    // onMounted(() => {
-    //   nextTick(() => {
-    //     // console.log(data.value);
-    //   });
-    // });
-    // const filteredArr = arr.filter((item) => item <= 5);
+    const clearText = () => {
+      searchText.value = "";
+    };
 
-    return { keyEnter, searchText };
+    return { keyEnter, searchText, clearText };
   },
 };
 </script>
@@ -34,6 +31,9 @@ export default {
       v-model="searchText"
       @keyup.enter="keyEnter()"
     />
+    <a href="javascript:;" @click.prevent.stop="clearText">
+      <i class="fa-regular fa-circle-xmark"></i>
+    </a>
   </div>
 </template>
 
@@ -43,18 +43,24 @@ export default {
   left: 1rem;
   display: flex;
   align-items: center;
-
-  i {
-    font-size: 30px;
+  label {
+    i {
+      font-size: 30px;
+    }
   }
+
   input {
     margin-left: 1rem;
     padding-left: 0.5rem;
-    width: 300px;
+    width: 200px;
     height: 30px;
     font-size: 20px;
     border: 1px solid black;
     border-radius: 3px;
+  }
+  i {
+    margin-left: 0.5rem;
+    font-size: 20px;
   }
 }
 </style>
