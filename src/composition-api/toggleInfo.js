@@ -17,11 +17,9 @@ export const toggleInfo = (item, index) => {
   //  新增目前點擊-檔案/樣式
   const toggleInfo = (item, index) => {
     idx.value = null;
-    store.dispatch("handInfoData", { isShow: false });
+    store.dispatch("handInfoData", { data: item, isShow: true });
     nextTick(() => {
       idx.value = index;
-      // 檔案到info用
-      store.dispatch("handInfoData", { data: item, isShow: true });
     });
   };
   //  置待檔案樣式

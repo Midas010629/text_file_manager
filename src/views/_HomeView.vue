@@ -74,9 +74,20 @@ export default {
     </div>
     <Search v-show="searchIsShow" />
   </div>
-  <InfoBar v-if="infoIsShow" />
+  <transition name="transition">
+    <InfoBar v-if="infoIsShow" />
+  </transition>
 </template>
 <style lang="scss" scoped>
+.transition-leave-active,
+.transition-enter-active {
+  transition: all 0.2s linear;
+}
+.transition-enter-from,
+.transition-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
 .container {
   flex-grow: 1;
   display: flex;

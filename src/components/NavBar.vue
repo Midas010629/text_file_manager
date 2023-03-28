@@ -37,13 +37,27 @@ export default {
       });
       // 上個被點擊的
       if (navActive.value != null) {
-        console.log("1");
         navActive.value.classList.remove("active", "actived");
       }
       store.dispatch("handNavActive", e.target);
     };
+
+    // 展開的高度計算
     const isOpen = (item) => {
       item.isOpen = !item.isOpen;
+      if (item.isOpen) {
+        const calculateHeight = (children) => {
+          return children.reduce((acc, child) => {
+            if (child.children != undefined) {
+              acc += calculateHeight(child.children);
+            }
+            return acc + 20;
+          }, 0);
+        };
+        item.domH = calculateHeight(item.children);
+      } else {
+        item.domH = 0;
+      }
     };
 
     // 判斷資料串,並接收資料
@@ -95,7 +109,7 @@ export default {
       <NavBar
         :item="item.children"
         class="subMenu"
-        :class="{ open: item.isOpen }"
+        :style="{ maxHeight: item.domH + 'px' }"
       >
         {{ item.fileName }}
       </NavBar>
@@ -124,12 +138,9 @@ export default {
 
   .subMenu {
     margin-left: 10px;
-    transition: max-height 0.2s ease-in-out;
+    transition: all 0.15s linear;
     max-height: 0;
     overflow: hidden;
-  }
-  .subMenu.open {
-    max-height: 200px;
   }
 }
 </style>

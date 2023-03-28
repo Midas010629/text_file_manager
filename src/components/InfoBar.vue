@@ -1,5 +1,5 @@
 <script>
-import { computed, onMounted, reactive, watch } from "vue";
+import { computed, onMounted, reactive, watch, nextTick } from "vue";
 import Img from "./Img.vue";
 import { useStore } from "vuex";
 
@@ -15,6 +15,7 @@ export default {
     const infoData = computed(() => {
       return store.getters.infoData.data;
     });
+
     const closeBar = () => {
       store.dispatch("handInfoData", { isShow: false });
     };
@@ -30,16 +31,18 @@ export default {
       <a href="javascript:;" @click.prevent.stop="closeBar">
         <i class="fa-regular fa-circle-xmark"></i>
       </a>
-      <div class="img">
-        <Img :item="infoData.fileExtension" :size="150" />
-        <h2 v-show="infoData.fileExtension != 'folder'">檔案詳細內容</h2>
-        <h2 v-show="infoData.fileExtension === 'folder'">資料夾詳細內容</h2>
-      </div>
-      <div class="content">
-        <p>名稱: {{ infoData.fileName }}</p>
-        <p>路徑: {{ infoData.filePath }}</p>
-        <p>大小: {{ infoData.fileSize }}</p>
-        <p>產生日期: {{ infoData.createdDate }}</p>
+      <div id="transition">
+        <div class="title">
+          <Img :item="infoData.fileExtension" :size="150" />
+          <h2 v-show="infoData.fileExtension != 'folder'">檔案詳細內容</h2>
+          <h2 v-show="infoData.fileExtension === 'folder'">資料夾詳細內容</h2>
+        </div>
+        <div class="content">
+          <p>名稱: {{ infoData.fileName }}</p>
+          <p>路徑: {{ infoData.filePath }}</p>
+          <p>大小: {{ infoData.fileSize }}</p>
+          <p>產生日期: {{ infoData.createdDate }}</p>
+        </div>
       </div>
     </div>
   </div>
@@ -65,7 +68,7 @@ export default {
       }
     }
 
-    .img {
+    .title {
       display: flex;
       flex-direction: column;
       align-items: center;
