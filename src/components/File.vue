@@ -3,6 +3,7 @@ import { computed, onMounted, reactive, ref, watch } from "vue";
 import { useStore } from "vuex";
 import Img from "../components/Img.vue";
 import { useGoSubfile, useToggleInfo } from "../composition-api";
+
 export default {
   components: { Img },
   props: {

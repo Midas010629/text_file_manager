@@ -62,6 +62,7 @@ export default {
     background-color: #e5e5e5;
     a {
       display: inline-block;
+
       margin: 1rem 0 0 1rem;
       i {
         font-size: 25px;

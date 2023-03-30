@@ -62,7 +62,7 @@ export default {
 
 <style lang="scss" scoped>
 .SearchBar {
-  flex-grow: 1;
+  // flex-grow: 1;
   border-radius: 10px;
   background-color: #e5e5e5;
   display: flex;

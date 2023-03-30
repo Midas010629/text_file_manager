@@ -44,19 +44,27 @@ export default {
 
     // 展開的高度計算
     const isOpen = (item) => {
-      item.isOpen = !item.isOpen;
-      if (item.isOpen) {
-        const calculateHeight = (children) => {
-          return children.reduce((acc, child) => {
-            if (child.children != undefined) {
-              acc += calculateHeight(child.children);
-            }
-            return acc + 20;
-          }, 0);
-        };
-        item.domH = calculateHeight(item.children);
-      } else {
-        item.domH = 0;
+      if (item.fileExtension === "folder") {
+        item.isOpen = !item.isOpen;
+        // icon
+        item.isOpen
+          ? (item.icon = "fa-solid fa-caret-right  fa-rotate-90")
+          : (item.icon = "fa-solid fa-caret-right");
+
+        // 高度
+        if (item.isOpen) {
+          const calculateHeight = (children) => {
+            return children.reduce((acc, child) => {
+              if (child.children != undefined) {
+                acc += calculateHeight(child.children);
+              }
+              return acc + 25;
+            }, 0);
+          };
+          item.domH = calculateHeight(item.children);
+        } else {
+          item.domH = 0;
+        }
       }
     };
 
@@ -85,15 +93,11 @@ export default {
     >
       <div class="menu">
         <div class="toggle-icon" @click="isOpen(item)">
-          {{
-            item.isOpen === true && item.fileExtension === "folder"
-              ? "▼"
-              : item.isOpen === false && item.fileExtension === "folder"
-              ? "▶"
-              : item.fileExtension != "folder"
-              ? ""
-              : "▶"
-          }}
+          <i
+            v-if="item.fileExtension === 'folder'"
+            class="fa-solid fa-caret-right"
+            :class="item.icon"
+          ></i>
         </div>
         <a
           :class="{ active: idx === index }"

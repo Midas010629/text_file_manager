@@ -4,6 +4,7 @@ import { useStore } from "vuex";
 import { useRoute } from "vue-router";
 import NavBar from "./components/NavBar.vue";
 import Header from "./components/Header.vue";
+
 export default {
   components: { NavBar, Header },
   setup() {
@@ -39,6 +40,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #d9d9d9;
 }
 a {
   text-decoration: none;
@@ -55,7 +57,6 @@ a {
   display: flex;
   width: 100%;
   height: 100%;
-  background-color: #d9d9d9;
 }
 .nav {
   flex-basis: 270px;
@@ -74,7 +75,7 @@ a {
   }
   .main {
     display: flex;
-    flex-grow: 1;
+    height: 100%;
     margin: 0 1rem 1rem 0;
   }
 }
