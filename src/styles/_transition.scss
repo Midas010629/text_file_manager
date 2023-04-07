@@ -1,0 +1,8 @@
+.animate__info-leave-active,
+.animate__info-enter-active {
+  transition: all 0.3s linear;
+}
+.animate__info-enter-from,
+.animate__info-leave-to {
+  opacity: 0;
+}

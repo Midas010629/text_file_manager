@@ -1,0 +1,10 @@
+@mixin pad {
+  @media (max-width: 1024px) {
+    @content;
+  }
+}
+@mixin mob {
+  @media (max-width: 600px) {
+    @content;
+  }
+}

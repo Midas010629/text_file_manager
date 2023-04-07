@@ -2,123 +2,87 @@
 import { computed, onMounted, reactive, watch, nextTick } from "vue";
 import { useStore } from "vuex";
 import { useRoute } from "vue-router";
-import NavBar from "./components/NavBar.vue";
-import Header from "./components/Header.vue";
+import { useClickActive } from "./composition-api";
+import NavTree from "./components/NavTree.vue";
+import HeaderBar from "./components/HeaderBar.vue";
 
 export default {
-  components: { NavBar, Header },
+  components: { NavTree, HeaderBar },
   setup() {
+    const { clickActive } = useClickActive();
+    clickActive();
     return {};
   },
 };
 </script>
 <template>
-  <div class="nav">
-    <h1>檔案總管</h1>
-    <NavBar />
-  </div>
-  <div class="content">
-    <div class="header">
-      <Header />
-    </div>
-    <div class="main">
+  <nav class="m-4">
+    <h1 class="h1 mb-4">檔案總管</h1>
+    <NavTree />
+  </nav>
+  <main>
+    <HeaderBar />
+
+    <div class="container d-flex mr-4">
       <router-view></router-view>
     </div>
-  </div>
+  </main>
 </template>
 
 <style lang="scss">
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-html,
-body {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #d9d9d9;
-}
-a {
-  text-decoration: none;
-  color: black;
-}
-.active {
-  background-color: rgb(187, 203, 223);
-}
-.actived {
-  border: 1px solid rgb(185, 189, 194);
-}
+@import "@/styles/variables.scss";
+@import "@/styles/mixin.scss";
 
-#app {
-  display: flex;
+nav {
+  flex: 0 0 250px;
+  @include pad {
+    display: none;
+  }
+}
+main {
   width: 100%;
   height: 100%;
-}
-.nav {
-  flex-basis: 270px;
-  flex-shrink: 0;
-  padding: 1rem;
-  h1 {
-    margin-bottom: 1rem;
+  @include pad {
+    width: 90%;
+    margin: 0 auto;
   }
-}
-.content {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  .header {
-    margin: 1rem 0 0.5rem 0;
+  header {
+    height: 40px;
   }
-  .main {
-    display: flex;
-    height: 100%;
-    margin: 0 1rem 1rem 0;
+  .container {
+    height: 90%;
+    position: relative;
+    @include pad {
+      margin: 0;
+    }
+    @include mob {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    article {
+      width: 100%;
+      border-radius: 10px;
+      background-color: $bg-color-secondary;
+      overflow: auto;
+      @include mob {
+        width: auto;
+      }
+    }
+    aside {
+      flex: 0 0 280px;
+      border-radius: 10px;
+      background-color: $bg-color-secondary;
+      @include pad {
+        flex: 0 0 250px;
+      }
+
+      @include mob {
+        width: 100%;
+        margin: 0 auto;
+        border: 1px solid black;
+      }
+    }
   }
 }
 </style>
-
-<!-- // 新增檔案///
-const addFile = () => {
-  let getID = active.value.getAttribute("id");
-
-  if (getID != undefined) {
-    let inputSplit = inputText.value.split(".");
-    let inputName = inputSplit[0];
-    if (Array.isArray(inputSplit) === true) {
-      let inputType = inputSplit[1];
-      // 如果是資料夾
-      if (inputType === undefined) {
-        inputName = `資料夾-${inputName}`;
-        let obj = {
-          name: inputName,
-          type: "file",
-          layer: addFileList.layer,
-        };
-        reState.files.splice(addFileList.id + 1, 0, obj);
-
-        inputText.value = "";
-      } else if (inputSplit.length > 2) {
-        alert("輸入格式錯誤");
-      }
-      // 執行檔 type: inputType
-      else {
-        if (getID != undefined) {
-          let obj = {
-            name: inputName,
-            type: "txt",
-            layer: addFileList.layer,
-          };
-          reState.files.splice(addFileList.id + 1, 0, obj);
-
-          inputText.value = "";
-        }
-      }
-    }
-  } else {
-    alert("選擇路徑");
-  }
-}; -->

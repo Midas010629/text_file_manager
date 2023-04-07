@@ -1,12 +1,12 @@
 <script>
 import { computed, onMounted, reactive, watch, nextTick } from "vue";
-import Img from "./Img.vue";
+import Image from "./Image.vue";
 import { useStore } from "vuex";
 
 export default {
   name: "InfoBar",
   components: {
-    Img,
+    Image,
   },
 
   setup() {
@@ -26,66 +26,48 @@ export default {
 };
 </script>
 <template>
-  <div class="card">
-    <div class="card-item">
-      <a href="javascript:;" @click.prevent.stop="closeBar">
+  <aside class="d-flex ml-6">
+    <div class="card">
+      <button
+        class="card__btn btn--secondary mt-2 ml-2"
+        @click.prevent.stop="closeBar"
+      >
         <i class="fa-regular fa-circle-xmark"></i>
-      </a>
-      <div id="transition">
-        <div class="title">
-          <Img :item="infoData.fileExtension" :size="150" />
-          <h2 v-show="infoData.fileExtension != 'folder'">檔案詳細內容</h2>
-          <h2 v-show="infoData.fileExtension === 'folder'">資料夾詳細內容</h2>
-        </div>
-        <div class="content">
-          <p>名稱: {{ infoData.fileName }}</p>
-          <p>路徑: {{ infoData.filePath }}</p>
-          <p>大小: {{ infoData.fileSize }}</p>
-          <p>產生日期: {{ infoData.createdDate }}</p>
-        </div>
+      </button>
+
+      <div class="card__title d-flex flex-column align-items-center">
+        <Image :item="infoData.fileExtension" style="font-size: 150px" />
+        <h3 class="h3 pt-4 pb-4" v-show="infoData.fileExtension != 'folder'">
+          檔案詳細內容
+        </h3>
+        <h3 class="h3 pt-4 pb-4" v-show="infoData.fileExtension === 'folder'">
+          資料夾詳細內容
+        </h3>
+      </div>
+      <div class="card__content ml-4">
+        <p>名稱: {{ infoData.fileName }}</p>
+        <p>大小: {{ infoData.fileSize }}</p>
+        <p>產生日期: {{ infoData.createdDate }}</p>
       </div>
     </div>
-  </div>
+  </aside>
 </template>
 
 <style lang="scss" scoped>
 .card {
-  flex-basis: 280px;
-  flex-shrink: 0;
-  display: flex;
-  height: 100%;
-  margin-left: 1.5rem;
+  width: 100%;
 
-  .card-item {
-    width: 100%;
-    border-radius: 10px;
-    background-color: #e5e5e5;
-    a {
-      display: inline-block;
-
-      margin: 1rem 0 0 1rem;
-      i {
-        font-size: 25px;
-      }
+  &__btn {
+    i {
+      font-size: 25px;
     }
-
-    .title {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      border-bottom: 1px solid gray;
-
-      h2 {
-        padding: 1rem 0;
-      }
-    }
-
-    .content {
-      display: flex;
-      flex-direction: column;
-      p {
-        padding: 0.5rem 0.5rem 0 0.5rem;
-      }
+  }
+  &__title {
+    border-bottom: 1px solid gray;
+  }
+  &__content {
+    p {
+      line-height: 40px;
     }
   }
 }

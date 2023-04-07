@@ -1,14 +1,14 @@
 <script>
 // nav-bar遞迴結構
 import { computed, onBeforeUpate, reactive, ref, watch, nextTick } from "vue";
-import NavBar from "./NavBar.vue";
-import { useGoSubfile } from "../composition-api";
+import NavTree from "./NavTree.vue";
+import { useGoSubfile, useToggleInfo } from "../composition-api";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
 export default {
-  name: "NavBar",
-  components: { NavBar },
+  name: "NavTree",
+  components: { NavTree },
   props: {
     item: {
       type: Array,
@@ -18,6 +18,7 @@ export default {
   setup(props, { emit }) {
     const store = useStore();
     const { Subfile } = useGoSubfile();
+    const { toggleInfo } = useToggleInfo();
 
     // 接收資料
     const files = reactive({ data: [] });
@@ -30,21 +31,20 @@ export default {
     });
 
     // 變更點擊樣式
-    const toggleActive = (e, index) => {
-      idx.value = null;
-      nextTick(() => {
-        idx.value = index;
-      });
+    const toggleActive = (e, item, index) => {
+      toggleInfo(item, index);
+
       // 上個被點擊的
       if (navActive.value != null) {
-        navActive.value.classList.remove("active", "actived");
+        navActive.value.classList.remove("jsActive", "jsActived");
       }
       store.dispatch("handNavActive", e.target);
     };
 
-    // 展開的高度計算
-    const isOpen = (item) => {
+    // 展開的高度計算 ,綁偽元素
+    const isOpen = (item, index) => {
       if (item.fileExtension === "folder") {
+        // 綁偽元素
         item.isOpen = !item.isOpen;
         // icon
         item.isOpen
@@ -58,7 +58,8 @@ export default {
               if (child.children != undefined) {
                 acc += calculateHeight(child.children);
               }
-              return acc + 25;
+              // li高度(list__item)20 + 8(mb-1 mt-1)
+              return acc + 28;
             }, 0);
           };
           item.domH = calculateHeight(item.children);
@@ -85,66 +86,78 @@ export default {
 };
 </script>
 <template>
-  <div>
-    <div
-      class="nav-bar"
+  <div class="navbar">
+    <ul
+      class="list"
       v-for="(item, index) in files.data"
       :key="item.filePath"
+      :class="{ isOpen: item.isOpen }"
     >
-      <div class="menu">
-        <div class="toggle-icon" @click="isOpen(item)">
+      <li class="list__item d-flex mb-1 mt-1">
+        <button
+          class="list__item__btn btn--primary"
+          type="button"
+          @click="isOpen(item, index)"
+        >
           <i
             v-if="item.fileExtension === 'folder'"
             class="fa-solid fa-caret-right"
             :class="item.icon"
           ></i>
-        </div>
+        </button>
         <a
-          :class="{ active: idx === index }"
+          class="list__item__link d-flex align-items-center p-2"
+          :class="{ jsActive: idx === index }"
           href="javascript:;"
           @click.prevent.stop="
             Subfile(item);
-            toggleActive($event, index);
+            toggleActive($event, item, index);
           "
           >{{ item.fileName }}</a
         >
-      </div>
+      </li>
 
-      <NavBar
+      <NavTree
         :item="item.children"
-        class="subMenu"
+        class="subNav ml-4"
         :style="{ maxHeight: item.domH + 'px' }"
       >
         {{ item.fileName }}
-      </NavBar>
-    </div>
+      </NavTree>
+    </ul>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.nav-bar {
-  .menu {
-    display: flex;
-    .toggle-icon {
-      width: 20px;
-      color: red;
-      cursor: pointer;
-      text-decoration: none;
-      text-align: center;
-    }
-    a {
-      padding: 0 0.25rem;
-    }
-    a:hover:not(.active) {
-      background-color: rgb(215, 221, 228);
+.list {
+  position: relative;
+  &.isOpen {
+    &::before {
+      content: "";
+      position: absolute;
+      left: 10px;
+      top: 20px;
+      bottom: 0;
+      border: 1px solid red;
     }
   }
 
-  .subMenu {
-    margin-left: 10px;
-    transition: all 0.15s linear;
-    max-height: 0;
-    overflow: hidden;
+  &__item {
+    height: 20px;
+
+    &__btn {
+      color: red;
+      i {
+        font-size: 20px;
+      }
+    }
+    &__link {
+    }
   }
+}
+.subNav {
+  transition: all 0.15s linear;
+  max-height: 0;
+  overflow: hidden;
 }
 </style>

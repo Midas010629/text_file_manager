@@ -1,11 +1,12 @@
 <script>
 import { computed, onMounted, reactive, ref, watch } from "vue";
 import { useStore } from "vuex";
-import Img from "../components/Img.vue";
+import Image from "./Image.vue";
 import { useGoSubfile, useToggleInfo } from "../composition-api";
+import { onBeforeRouteUpdate } from "vue-router";
 
 export default {
-  components: { Img },
+  components: { Image },
   props: {
     item: {
       type: Array,
@@ -16,44 +17,53 @@ export default {
     const { Subfile } = useGoSubfile();
     const { toggleInfo, idx } = useToggleInfo();
 
+    //  當引用同組件時 需要清空變數
+    onBeforeRouteUpdate((to, from, next) => {
+      idx.value = null;
+      next();
+    });
+
     return { props, Subfile, toggleInfo, idx };
   },
 };
 </script>
 <template>
-  <a
-    class="card"
-    v-for="(item, index) in props.item"
-    :class="{ active: idx === index }"
-    @dblclick.prevent="Subfile(item)"
-    @click.prevent.stop="toggleInfo(item, index)"
-    href="javascript:;"
-    :key="item.filePath"
-    :id="item.filePath"
-  >
-    <!-- 引入圖片Img/ -->
-    <div class="img">
-      <Img :item="item.fileExtension" :size="200" />
-    </div>
-    <p>{{ item.fileName }}</p>
-  </a>
+  <div class="cards d-flex flex-wrap">
+    <a
+      class="cards__item d-flex flex-column align-items-center m-1 p-2"
+      :class="{ jsActive: idx === index }"
+      v-for="(item, index) in props.item"
+      @dblclick.prevent="Subfile(item)"
+      @click.prevent.stop="toggleInfo(item, index)"
+      href="javascript:;"
+      :key="item.filePath"
+      :id="item.filePath"
+    >
+      <!-- 引入圖片Img/ -->
+      <Image class="cards__item__img mb-2" :item="item.fileExtension" />
+      <p class="cards__item__title">{{ item.fileName }}</p>
+    </a>
+  </div>
 </template>
 
 <style lang="scss" scoped>
-.card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 250px;
-  margin: 0.25rem;
-  padding: 0.5rem;
-
-  .img {
-    pointer-events: none;
-    margin-bottom: 0.5rem;
-  }
-  p {
-    pointer-events: none;
+@import "@/styles/mixin.scss";
+.cards {
+  &__item {
+    width: 250px;
+    @include pad {
+      width: 200px;
+    }
+    &__img {
+      pointer-events: none;
+      font-size: 200px;
+      @include pad {
+        font-size: 180px;
+      }
+    }
+    &__title {
+      pointer-events: none;
+    }
   }
 }
 </style>

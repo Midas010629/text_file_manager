@@ -3,10 +3,9 @@ import { v4 as uuidv4 } from "uuid";
 export default createStore({
   state: {
     fetchData: [],
-    childrenData: [],
     infoData: { data: null, isShow: false },
     navActive: null,
-    searchData: { data: null, isShow: false },
+    searchData: { data: [], isShow: false },
   },
   actions: {
     handInit({ commit }) {
@@ -17,9 +16,7 @@ export default createStore({
           return res.files;
         });
     },
-    handChildren({ commit }, data) {
-      commit("children", data);
-    },
+
     handNavActive({ commit }, data) {
       commit("navActive", data);
     },
@@ -34,9 +31,6 @@ export default createStore({
   mutations: {
     init(state, payload) {
       state.fetchData = payload;
-    },
-    children(state, payload) {
-      state.childrenData = payload;
     },
     navActive(state, payload) {
       state.navActive = payload;
@@ -55,9 +49,6 @@ export default createStore({
   getters: {
     fetchData(state) {
       return state.fetchData;
-    },
-    childrenData(state) {
-      return state.childrenData;
     },
     navActive(state) {
       return state.navActive;

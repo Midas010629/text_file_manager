@@ -17,9 +17,9 @@ export default {
   setup() {
     const route = useRoute();
     const store = useStore();
-    const fetchData = reactive({ data: [] });
+
     // 目前路徑的所有資料夾
-    const flies = reactive({ data: [] });
+    const flies = reactive({ data: [], title: null });
 
     const infoIsShow = computed(() => {
       return store.getters.infoData.isShow;
@@ -29,33 +29,58 @@ export default {
       return store.getters.searchData.isShow;
     });
 
+    const fetchData = computed(() => {
+      return store.getters.fetchData;
+    });
+
+    // 遞迴找資料
+    const findObject = (arr) => {
+      for (const item of arr) {
+        if (item.filePath === route.path) {
+          return item;
+        } else if (item.children !== undefined) {
+          const children = findObject(item.children);
+          if (children !== undefined) {
+            return children;
+          }
+        }
+      }
+      return undefined;
+    };
+
     watch(
-      () => store.getters.childrenData,
-      (item) => {
-        flies.data = item;
+      () => route.path,
+      (newItem) => {
+        //  路徑名
+        if (route.path !== "/") {
+          flies.title = route.path.split("/").slice(1);
+        } else {
+          flies.title = "";
+        }
+
+        // data
+        if (route.path === "/") {
+          flies.data = fetchData.value;
+        } else {
+          flies.data = findObject(fetchData.value).children;
+        }
       }
     );
 
     onMounted(() => {
       store.dispatch("handInit").then((res) => {
-        const findObject = (arr) => {
-          for (const item of arr) {
-            if (item.filePath === route.path) {
-              return item;
-            } else if (item.children !== undefined) {
-              const children = findObject(item.children);
-              if (children !== undefined) {
-                return children;
-              }
-            }
-          }
-          return undefined;
-        };
-
-        if (route.path === "/") {
-          flies.data = res;
+        // 路徑名
+        if (route.path !== "/") {
+          flies.title = route.path.split("/").slice(1);
         } else {
-          flies.data = findObject(res).children;
+          flies.title = "";
+        }
+
+        // data
+        if (route.path === "/") {
+          flies.data = fetchData.value;
+        } else {
+          flies.data = findObject(fetchData.value).children;
         }
       });
     });
@@ -65,56 +90,21 @@ export default {
 };
 </script>
 <template>
-  <div class="container">
-    <div class="path" v-if="!searchIsShow">
-      <h2>當前路徑: {{ route.path }}</h2>
-      <div class="cards">
-        <File :item="flies.data" />
-      </div>
+  <article class="p-4">
+    <div class="d-flex mb-4" v-show="!searchIsShow">
+      <h2 class="h2">
+        <router-link to="/" class="p-1">
+          <i class="fa-solid fa-house"></i
+        ></router-link>
+      </h2>
+      <h2 class="h2 mr-1" v-for="item in flies.title">>{{ item }}</h2>
     </div>
+    <File :item="flies.data" v-show="!searchIsShow" />
+
     <Search v-show="searchIsShow" />
-  </div>
-  <transition name="animate_info">
+  </article>
+  <transition name="animate__info">
     <InfoBar v-if="infoIsShow" />
   </transition>
 </template>
-<style lang="scss" scoped>
-.animate_info-leave-active,
-.animate_info-enter-active {
-  transition: all 0.2s linear;
-}
-.animate_info-enter-from,
-.animate_info-leave-to {
-  opacity: 0;
-  transform: translateX(30px);
-}
-.container {
-  flex-grow: 1;
-  // display: flex;
-  // flex-direction: column;
-  border-radius: 10px;
-  background-color: #e5e5e5;
-
-  .path {
-    // flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    border-radius: 10px;
-    background-color: #e5e5e5;
-
-    h2 {
-      font-size: 1.25em;
-      padding: 1rem 0 0 2rem;
-    }
-    .cards {
-      display: flex;
-      flex-wrap: wrap;
-      margin: 1rem;
-
-      :hover:not(.active) {
-        background-color: rgb(215, 221, 228);
-      }
-    }
-  }
-}
-</style>
+<style lang="scss" scoped></style>

@@ -1,0 +1,50 @@
+html,
+body {
+  height: 100%;
+  background-color: $bg-color-primary;
+  box-sizing: border-box;
+  font-family: Microsoft JhengHei;
+}
+#app {
+  height: 100%;
+  display: flex;
+}
+
+.h1 {
+  font-size: 2rem;
+}
+.h2 {
+  font-size: 1.5rem;
+}
+.h3 {
+  font-size: 1.25rem;
+}
+button {
+  cursor: pointer;
+  border: none;
+}
+input {
+  outline: none;
+}
+
+.btn--primary {
+  background-color: $bg-color-primary;
+}
+.btn--secondary {
+  background-color: $bg-color-secondary;
+}
+
+.jsActive {
+  background-color: $file-color-primary;
+}
+.jsActived {
+  outline: 1px solid $file-color-secondary;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+  &:hover:not(.jsActive) {
+    background-color: $file-color-hover;
+  }
+}
