@@ -42,7 +42,7 @@ input {
   font-size: 20px;
   padding-left: 10px;
   &:focus {
-    border: 1px solid rgb(231, 150, 150);
+    border: 1px solid rgba($color: red, $alpha: 0.25);
   }
 }
 

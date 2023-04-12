@@ -138,7 +138,7 @@ export default {
       left: 10px;
       top: 20px;
       bottom: 0;
-      border: 1px solid red;
+      border: 1px solid rgba($color: red, $alpha: 0.3);
     }
   }
 

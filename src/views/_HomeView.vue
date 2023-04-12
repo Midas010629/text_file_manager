@@ -6,6 +6,7 @@ import { useRoute, onBeforeRouteUpdate } from "vue-router";
 import File from "../components/File.vue";
 import Search from "@/components/SearchBar.vue";
 import InfoBar from "@/components/InfoBar.vue";
+import router from "@/router";
 
 export default {
   name: "_HomeView",
@@ -19,7 +20,7 @@ export default {
     const store = useStore();
 
     // 目前路徑的所有資料夾
-    const flies = reactive({ data: [], title: null });
+    const flies = reactive({ data: [], title: [], path: [] });
 
     const infoIsShow = computed(() => {
       return store.getters.infoData.isShow;
@@ -48,44 +49,46 @@ export default {
       return undefined;
     };
 
+    // 根據path找data
+    const findPathData = () => {
+      // data
+      if (route.path === "/") {
+        // 找到首頁
+        flies.data = fetchData.value;
+        flies.title = null;
+      } else {
+        if (findObject(fetchData.value)) {
+          //找到路徑分頁
+          flies.data = findObject(fetchData.value).children;
+          flies.title = route.path.split("/").slice(1);
+          flies.path = flies.title.map((value, index) =>
+            flies.title.slice(0, index + 1).join("/")
+          );
+        } else {
+          // 無此分頁 導入首頁
+          router.push({ path: "/" });
+        }
+      }
+    };
+
+    const titleGoPath = (index) => {
+      router.push({ path: `/${flies.path[index]}` });
+    };
+
     watch(
       () => route.path,
       (newItem) => {
-        //  路徑名
-        if (route.path !== "/") {
-          flies.title = route.path.split("/").slice(1);
-        } else {
-          flies.title = "";
-        }
-
-        // data
-        if (route.path === "/") {
-          flies.data = fetchData.value;
-        } else {
-          flies.data = findObject(fetchData.value).children;
-        }
+        findPathData();
       }
     );
 
     onMounted(() => {
       store.dispatch("handInit").then((res) => {
-        // 路徑名
-        if (route.path !== "/") {
-          flies.title = route.path.split("/").slice(1);
-        } else {
-          flies.title = "";
-        }
-
-        // data
-        if (route.path === "/") {
-          flies.data = fetchData.value;
-        } else {
-          flies.data = findObject(fetchData.value).children;
-        }
+        findPathData();
       });
     });
 
-    return { flies, infoIsShow, searchIsShow, route };
+    return { flies, infoIsShow, searchIsShow, route, titleGoPath };
   },
 };
 </script>
@@ -97,7 +100,11 @@ export default {
           <i class="fa-solid fa-house"></i
         ></router-link>
       </h2>
-      <h2 class="h2 mr-1" v-for="item in flies.title">>{{ item }}</h2>
+      <h2 class="h2" v-for="(item, index) in flies.title">
+        ><a class="p-1" href="javascript:;" @click="titleGoPath(index)">
+          {{ item }}
+        </a>
+      </h2>
     </div>
     <File :item="flies.data" v-show="!searchIsShow" />
 
