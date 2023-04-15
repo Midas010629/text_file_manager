@@ -8,7 +8,7 @@ import {
   onUpdated,
 } from "vue";
 
-export const toggleInfo = (item, index) => {
+export const toggleInfo = () => {
   const store = useStore();
   // 目前點擊a標籤索引
   const idx = ref(null);

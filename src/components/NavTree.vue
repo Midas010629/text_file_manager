@@ -18,12 +18,11 @@ export default {
   setup(props, { emit }) {
     const store = useStore();
     const { Subfile } = useGoSubfile();
-    const { toggleInfo } = useToggleInfo();
+    const { toggleInfo, idx } = useToggleInfo();
 
     // 接收資料
     const files = reactive({ data: [] });
     // 目前點擊索引
-    const idx = ref(null);
 
     // 上個被點擊的
     const navActive = computed(() => {
@@ -38,6 +37,7 @@ export default {
       if (navActive.value != null) {
         navActive.value.classList.remove("jsActive", "jsActived");
       }
+
       store.dispatch("handNavActive", e.target);
     };
 
@@ -106,7 +106,7 @@ export default {
           ></i>
         </button>
         <a
-          class="list__item__link d-flex align-items-center p-2"
+          class="d-flex align-items-center p-2"
           :class="{ jsActive: idx === index }"
           href="javascript:;"
           @click.prevent.stop="
@@ -151,12 +151,10 @@ export default {
         font-size: 20px;
       }
     }
-    &__link {
-    }
   }
 }
 .subNav {
-  transition: all 0.15s linear;
+  transition: all 0.2s linear;
   max-height: 0;
   overflow: hidden;
 }
