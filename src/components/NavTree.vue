@@ -100,7 +100,7 @@ export default {
           @click="isOpen(item, index)"
         >
           <i
-            v-if="item.fileExtension === 'folder'"
+            v-show="item.fileExtension === 'folder'"
             class="fa-solid fa-caret-right"
             :class="item.icon"
           ></i>
@@ -146,6 +146,7 @@ export default {
     height: 20px;
 
     &__btn {
+      width: 20px;
       color: red;
       i {
         font-size: 20px;
