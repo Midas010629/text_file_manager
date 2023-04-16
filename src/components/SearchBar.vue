@@ -7,7 +7,7 @@ export default {
   setup() {
     const store = useStore();
 
-    const flies = reactive({ data: [] });
+    const files = reactive({ data: [] });
     const fetchData = computed(() => {
       return store.getters.fetchData;
     });
@@ -33,7 +33,7 @@ export default {
             return item.fileName.includes(newItem.data);
           });
         };
-        flies.data = filterArr(flatData);
+        files.data = filterArr(flatData);
       },
       { deep: true }
     );
@@ -41,7 +41,7 @@ export default {
     const closeBar = () => {
       store.dispatch("handSearchData", { isShow: false });
     };
-    return { flies, closeBar };
+    return { files, closeBar };
   },
 };
 </script>
@@ -54,7 +54,7 @@ export default {
       <h2 class="h2">搜尋結果</h2>
     </div>
 
-    <File :item="flies.data" />
+    <File :item="files.data" />
   </div>
 </template>
 

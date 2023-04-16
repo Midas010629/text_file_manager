@@ -20,7 +20,7 @@ export default {
     const store = useStore();
 
     // 目前路徑的所有資料夾
-    const flies = reactive({ data: [], title: [], path: [] });
+    const files = reactive({ data: [], title: [], path: [] });
 
     const infoIsShow = computed(() => {
       return store.getters.infoData.isShow;
@@ -54,15 +54,15 @@ export default {
       // data
       if (route.path === "/") {
         // 找到首頁
-        flies.data = fetchData.value;
-        flies.title = null;
+        files.data = fetchData.value;
+        files.title = null;
       } else {
         if (findObject(fetchData.value)) {
           //找到路徑分頁
-          flies.data = findObject(fetchData.value).children;
-          flies.title = route.path.split("/").slice(1);
-          flies.path = flies.title.map((value, index) =>
-            flies.title.slice(0, index + 1).join("/")
+          files.data = findObject(fetchData.value).children;
+          files.title = route.path.split("/").slice(1);
+          files.path = files.title.map((value, index) =>
+            files.title.slice(0, index + 1).join("/")
           );
         } else {
           // 無此分頁 導入首頁
@@ -72,7 +72,7 @@ export default {
     };
 
     const titleGoPath = (index) => {
-      router.push({ path: `/${flies.path[index]}` });
+      router.push({ path: `/${files.path[index]}` });
     };
 
     watch(
@@ -87,7 +87,7 @@ export default {
       findPathData();
     });
 
-    return { flies, infoIsShow, searchIsShow, route, titleGoPath };
+    return { files, infoIsShow, searchIsShow, route, titleGoPath };
   },
 };
 </script>
@@ -99,13 +99,13 @@ export default {
           <i class="fa-solid fa-house"></i
         ></router-link>
       </h2>
-      <h2 class="h2" v-for="(item, index) in flies.title">
+      <h2 class="h2" v-for="(item, index) in files.title">
         ><a class="p-1" href="javascript:;" @click="titleGoPath(index)">
           {{ item }}
         </a>
       </h2>
     </div>
-    <File :item="flies.data" v-show="!searchIsShow" />
+    <File :item="files.data" v-show="!searchIsShow" />
 
     <Search v-show="searchIsShow" />
   </article>
