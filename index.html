@@ -1,0 +1,22 @@
+<!doctype html><html lang=""><head><meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="icon" href="/text_file_manager/favicon.ico"/><title>file_manager</title><script defer="defer" src="/text_file_manager/js/chunk-vendors.47a452c0.js"></script><script defer="defer" src="/text_file_manager/js/app.d5006ef0.js"></script><link href="/text_file_manager/css/chunk-vendors.f703930a.css" rel="stylesheet"><link href="/text_file_manager/css/app.9c4eb916.css" rel="stylesheet"></head><body><noscript><strong>We're sorry but file_manager doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id="app"></div><script>(function (l) {
+        if (l.search) {
+          var q = {};
+          l.search
+            .slice(1)
+            .split("&")
+            .forEach(function (v) {
+              var a = v.split("=");
+              q[a[0]] = a.slice(1).join("=").replace(/~and~/g, "&");
+            });
+          if (q.p !== undefined) {
+            window.history.replaceState(
+              null,
+              null,
+              l.pathname.slice(0, -1) +
+                (q.p || "") +
+                (q.q ? "?" + q.q : "") +
+                l.hash
+            );
+          }
+        }
+      })(window.location);</script></body></html>

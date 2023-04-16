@@ -1,0 +1,66 @@
+{
+  "files": [
+    {
+      "fileName": "Documents",
+      "fileIcon": "doc",
+      "fileExtension": "folder",
+      "filePath": "/Documents",
+      "fileSize": "200MB",
+      "createdDate": "2022-01-01",
+      "children": [
+        {
+          "fileName": "Resume",
+          "fileIcon": "doc",
+          "fileExtension": "folder",
+          "filePath": "/Documents/Resume",
+          "fileSize": "150MB",
+          "createdDate": "2022-01-01",
+          "children": [
+            {
+              "fileName": "123.doc",
+              "fileIcon": "doc",
+              "fileExtension": "docx",
+              "filePath": "/Documents/Resume/123.doc",
+              "fileSize": "80MB",
+              "createdDate": "2022-01-01"
+            }
+          ]
+        },
+        {
+          "fileName": "Presentation.pptx",
+          "fileIcon": "ppt",
+          "fileExtension": "pptx",
+          "filePath": "/Documents/Presentation.pptx",
+          "fileSize": "5MB",
+          "createdDate": "2022-02-01"
+        }
+      ]
+    },
+    {
+      "fileName": "Pictures",
+      "fileIcon": "img",
+      "fileExtension": "folder",
+      "filePath": "/Pictures",
+      "fileSize": "500MB",
+      "createdDate": "2022-01-01",
+      "children": [
+        {
+          "fileName": "Vacation.jpg",
+          "fileIcon": "img",
+          "fileExtension": "jpg",
+          "filePath": "/Pictures/Vacation.jpg",
+          "fileSize": "2MB",
+          "createdDate": "2022-01-01"
+        },
+        {
+          "fileName": "Family.jpg",
+          "fileIcon": "img",
+          "fileExtension": "jpg",
+          "filePath": "/Pictures/Family.jpg",
+          "fileSize": "3MB",
+          "createdDate": "2022-02-01"
+        }
+      ]
+    }
+  ]
+}
