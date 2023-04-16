@@ -82,10 +82,9 @@ export default {
       }
     );
 
-    onMounted(() => {
-      store.dispatch("handInit").then((res) => {
-        findPathData();
-      });
+    onMounted(async () => {
+      await store.dispatch("handInit");
+      findPathData();
     });
 
     return { flies, infoIsShow, searchIsShow, route, titleGoPath };

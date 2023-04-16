@@ -1,4 +1,4 @@
-# file_manger
+# file_manager
 
 ## Project setup
 ```

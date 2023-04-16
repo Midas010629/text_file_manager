@@ -1,5 +1,5 @@
 import { createStore } from "vuex";
-import { v4 as uuidv4 } from "uuid";
+
 export default createStore({
   state: {
     fetchData: [],
@@ -13,7 +13,6 @@ export default createStore({
         .then((response) => response.json())
         .then((res) => {
           commit("init", res.files);
-          return res.files;
         });
     },
 
@@ -21,7 +20,6 @@ export default createStore({
       commit("navActive", data);
     },
     handInfoData({ commit }, data) {
-      // const id = uuidv4();
       commit("infoData", data);
     },
     handSearchData({ commit }, data) {
